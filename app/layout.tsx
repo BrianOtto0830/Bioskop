@@ -5,6 +5,7 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { getMovies } from "@/lib/utils";
 
+
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -27,19 +28,27 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const movies = await getMovies();
-
+//flatmap untuk mengeluarkan array yang ada didalam array
   const allGenres = movies.flatMap((movie) =>
     movie.Genre.replaceAll(" ", "").split(",")
   );
 
+  const allCountries = movies.flatMap((movie) =>
+    movie.Country.split(",").map((country) => country.trim().replace(/ /g, "-"))
+  );
+  
+
   const genres = [...new Set(allGenres)];
+  const countries = [...new Set(allCountries)];
+  
+//untuk mengambil data unique pada data, jadi tidak ke double double
 
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col h-screen`}
       >
-        <Header genres={genres} />
+        <Header genres={genres} countries={countries}/>
         <div className="flex-1">{children}</div>
         <Footer />
       </body>
